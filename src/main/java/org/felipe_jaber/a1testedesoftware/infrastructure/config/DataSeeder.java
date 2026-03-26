@@ -40,25 +40,25 @@ public class DataSeeder implements CommandLineRunner {
             Author author1 = new Author();
             author1.setId(UUID.randomUUID());
             author1.setName("J.K. Rowling");
-            author1.setNationality("British");
+            author1.setNationality("Britânica");
             authorRepository.save(author1);
 
             Author author2 = new Author();
             author2.setId(UUID.randomUUID());
             author2.setName("J.R.R. Tolkien");
-            author2.setNationality("British");
+            author2.setNationality("Britânico");
             authorRepository.save(author2);
 
             Book book1 = new Book();
             book1.setId(UUID.randomUUID());
-            book1.setTitle("Harry Potter and the Sorcerer's Stone");
+            book1.setTitle("Harry Potter e a Pedra Filosofal");
             book1.setIsbn("9780590353427");
             book1.setAuthor(author1);
             bookRepository.save(book1);
 
             Book book2 = new Book();
             book2.setId(UUID.randomUUID());
-            book2.setTitle("The Hobbit");
+            book2.setTitle("O Hobbit");
             book2.setIsbn("9780547928227");
             book2.setAuthor(author2);
             bookRepository.save(book2);
@@ -77,16 +77,16 @@ public class DataSeeder implements CommandLineRunner {
 
             Employee employee = new Employee();
             employee.setId(UUID.randomUUID());
-            employee.setName("Admin User");
+            employee.setName("Usuário Admin");
             employee.setRegistration("EMP001");
-            employee.setPosition("Librarian");
+            employee.setPosition("Bibliotecário");
             employeeRepository.save(employee);
 
             Customer customer = new Customer();
             customer.setId(UUID.randomUUID());
-            customer.setName("John Doe");
+            customer.setName("João da Silva");
             customer.setCpf(new CPF("12345678901"));
-            customer.setEmail(new Email("john.doe@example.com"));
+            customer.setEmail(new Email("joao.silva@exemplo.com"));
             customer.setNumber(new PhoneNumber("11999999999"));
             customerRepository.save(customer);
 
