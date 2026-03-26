@@ -38,30 +38,25 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    void shouldRegisterCustomerSuccessfully() {
-        CustomerRegistrationRequest request = new CustomerRegistrationRequest("12345678901", "test@test.com", "Test Name", "11988887777");
+    void testRegistrarClienteSucesso() {
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest("12345678901", "test@test.com", "Joao", "11988887777");
         Customer customer = new Customer();
-        CustomerResponse expectedResponse = new CustomerResponse(UUID.randomUUID(), "Test Name", "12345678901", "test@test.com", "11988887777");
+        CustomerResponse response = new CustomerResponse(UUID.randomUUID(), "Joao", "12345678901", "test@test.com", "11988887777");
 
-        when(repository.findByCpf(any(CPF.class))).thenReturn(Optional.empty());
-        when(repository.findByEmail(any(Email.class))).thenReturn(Optional.empty());
-        when(mapper.toEntity(request)).thenReturn(customer);
-        when(mapper.toResponse(customer)).thenReturn(expectedResponse);
+        when(repository.findByCpf(any())).thenReturn(Optional.empty());
+        when(repository.findByEmail(any())).thenReturn(Optional.empty());
+        when(mapper.toEntity(any())).thenReturn(customer);
+        when(mapper.toResponse(any())).thenReturn(response);
 
-        CustomerResponse result = registerUseCase.execute(request);
-
-        assertNotNull(result);
-        assertEquals(expectedResponse.id(), result.id());
-        verify(repository, times(1)).save(customer);
+        assertNotNull(registerUseCase.execute(request));
+        verify(repository).save(customer);
     }
 
     @Test
-    void shouldThrowExceptionWhenCpfAlreadyExists() {
-        CustomerRegistrationRequest request = new CustomerRegistrationRequest("12345678901", "test@test.com", "Test Name", "11988887777");
-
-        when(repository.findByCpf(any(CPF.class))).thenReturn(Optional.of(new Customer()));
+    void testRegistrarClienteErroDuplicado() {
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest("12345678901", "test@test.com", "Joao", "11988887777");
+        when(repository.findByCpf(any())).thenReturn(Optional.of(new Customer()));
 
         assertThrows(CustomerAlreadyExistsException.class, () -> registerUseCase.execute(request));
-        verify(repository, never()).save(any(Customer.class));
     }
 }

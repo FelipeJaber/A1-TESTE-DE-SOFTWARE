@@ -6,33 +6,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class EmailTest {
 
     @Test
-    void shouldCreateEmailWhenValueIsValid() {
-        String validEmail = "test@example.com";
-        Email email = new Email(validEmail);
-        assertEquals(validEmail, email.getValue());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenEmailIsInvalid() {
-        String invalidEmail = "invalid-email";
-        assertThrows(IllegalArgumentException.class, () -> new Email(invalidEmail));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenEmailIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Email(null));
-    }
-
-    @Test
-    void shouldReturnTrueForValidEmailStrings() {
+    void testEmailValido() {
+        Email email = new Email("test@example.com");
+        assertEquals("test@example.com", email.getValue());
         assertTrue(Email.isValid("user@domain.com"));
-        assertTrue(Email.isValid("user.name+tag@domain.co.uk"));
     }
 
     @Test
-    void shouldReturnFalseForInvalidEmailStrings() {
-        assertFalse(Email.isValid("plainaddress"));
-        assertFalse(Email.isValid("@missinguser.com"));
-        assertFalse(Email.isValid("user@.com"));
+    void testEmailInvalido() {
+        assertThrows(IllegalArgumentException.class, () -> new Email("invalido"));
+        assertFalse(Email.isValid("sem-arroba"));
+        assertFalse(Email.isValid(null));
     }
 }

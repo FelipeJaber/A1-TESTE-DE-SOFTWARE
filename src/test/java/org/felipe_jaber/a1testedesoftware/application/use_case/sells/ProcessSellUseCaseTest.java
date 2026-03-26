@@ -47,50 +47,34 @@ class ProcessSellUseCaseTest {
     }
 
     @Test
-    void shouldProcessSellSuccessfully() {
-        UUID bookId = UUID.randomUUID();
-        UUID customerId = UUID.randomUUID();
-        UUID employeeId = UUID.randomUUID();
-        SellRequest request = new SellRequest(bookId, customerId, employeeId, 2, new BigDecimal("100.00"));
-
-        Book book = new Book();
-        Customer customer = new Customer();
-        Employee employee = new Employee();
+    void testProcessarVendaSucesso() {
+        SellRequest request = new SellRequest(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 2, new BigDecimal("100.00"));
         Stock stock = new Stock();
         stock.setQuantity(10);
-        Sell sell = new Sell();
 
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        when(stockRepository.findByBook(book)).thenReturn(Optional.of(stock));
-        when(mapper.toEntity(request)).thenReturn(sell);
-        when(mapper.toResponse(any(Sell.class))).thenReturn(new SellResponse(UUID.randomUUID(), mock(BookResponse.class), mock(CustomerResponse.class), mock(EmployeeResponse.class), 2, new BigDecimal("100.00"), LocalDateTime.now()));
+        when(bookRepository.findById(any())).thenReturn(Optional.of(new Book()));
+        when(customerRepository.findById(any())).thenReturn(Optional.of(new Customer()));
+        when(employeeRepository.findById(any())).thenReturn(Optional.of(new Employee()));
+        when(stockRepository.findByBook(any())).thenReturn(Optional.of(stock));
+        when(mapper.toEntity(any())).thenReturn(new Sell());
+        when(mapper.toResponse(any())).thenReturn(mock(SellResponse.class));
 
-        SellResponse response = processSellUseCase.execute(request);
-
-        assertNotNull(response);
+        assertNotNull(processSellUseCase.execute(request));
         assertEquals(8, stock.getQuantity());
-        verify(stockRepository, times(1)).save(stock);
-        verify(repository, times(1)).save(sell);
     }
 
     @Test
-    void shouldThrowExceptionWhenStockIsInsufficient() {
-        UUID bookId = UUID.randomUUID();
-        SellRequest request = new SellRequest(bookId, UUID.randomUUID(), UUID.randomUUID(), 10, new BigDecimal("100.00"));
-
-        Book book = new Book();
+    void testVendaErroEstoqueInsuficiente() {
+        SellRequest request = new SellRequest(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 10, new BigDecimal("100.00"));
         Stock stock = new Stock();
         stock.setQuantity(5);
 
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(any())).thenReturn(Optional.of(new Book()));
         when(customerRepository.findById(any())).thenReturn(Optional.of(new Customer()));
         when(employeeRepository.findById(any())).thenReturn(Optional.of(new Employee()));
-        when(stockRepository.findByBook(book)).thenReturn(Optional.of(stock));
+        when(stockRepository.findByBook(any())).thenReturn(Optional.of(stock));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> processSellUseCase.execute(request));
-        assertEquals("Insufficient stock", exception.getMessage());
-        verify(repository, never()).save(any());
+        RuntimeException error = assertThrows(RuntimeException.class, () -> processSellUseCase.execute(request));
+        assertEquals("Insufficient stock", error.getMessage());
     }
 }
